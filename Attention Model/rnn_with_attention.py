@@ -37,21 +37,15 @@ from wandb.keras import WandbCallback
 
 
 def load_data():
-     '''
-   This function accepts no parameters
-   This function opens the tsv file for training and validation datasets
-   Returns training and validation dataset readers
-  '''
     
     train_file_path = "te.translit.sampled.train.tsv"
     val_file_path = "te.translit.sampled.dev.tsv"
 
 
-    #tsv files are seperated by tab spaces. Hence delimiter is \t
+
     train_tsv_file = open(train_file_path, "r", encoding="utf-8")
     train_dataset = csv.reader(train_tsv_file, delimiter="\t")
 
-    #tsv files are seperated by tab spaces. Hence delimiter is \t
     val_tsv_file = open(val_file_path, "r", encoding="utf-8")
     val_dataset = csv.reader(val_tsv_file, delimiter="\t")
 
@@ -59,12 +53,6 @@ def load_data():
 
 
 def load_test_data():
-    
-      ''' 
-  This function accepts no parameters
-  This function opens the tsv file for test dataset
-  Returns test dataset 
-  '''
 
     test_file_path = "te.translit.sampled.test.tsv"
 
@@ -74,22 +62,12 @@ def load_test_data():
     return test_dataset
 
 def prepare_data():
-    
-     '''
-   This function accpets no parameters 
-   This function returns data values of input and target words by adding
-   two characters \t and \n at the beginning and end of the word 
-   respectively.
-   This function  returns the input and target words for training and validation datasets
-  '''
 
     train_dataset, val_dataset = load_data()
     
     input = []
     target = []
     #print(english)
-    
-    #Collecting the input and target words from train data set
     for i in train_dataset:
         #print(i) 
         target.append(i[0])
@@ -99,7 +77,7 @@ def prepare_data():
     target = np.array(target)
     input = np.array(input)
 
-    #Collecting the input and target words from validation data set
+    # Validation data
     val_input = []
     val_target = []
 
@@ -110,7 +88,6 @@ def prepare_data():
     val_target = np.array(val_target)
     val_input = np.array(val_input)
 
-    #Enclosing the target words between \t and \n denoting start and stop symbols
     for i in range(len(target)):
         target[i] = "\t" + target[i] + "\n"
     
@@ -121,14 +98,6 @@ def prepare_data():
 
 
 def prepare_test_data():
-    
-    '''
-   This function accpets no parameters 
-   This function returns data values of input and target words by adding
-   two characters \t and \n at the beginning and end of the word 
-   respectively.
-   This function  returns the input and target words for test datasets
-  '''
 
     test_dataset = load_test_data()
     
@@ -153,18 +122,6 @@ def prepare_test_data():
 
 
 def one_hot_encoding_test(input, target, input_tokens, target_tokens):
-    
-    '''
-   This function takes in words and characters of input and target language,
-   This function encodes each character of the word with a number correspoding to its position in the language
-   for example : 'a' in english (input language) is given : 0 'b' : 1 and so on...
-  The various parameters are as listed below
-  
-  # input               : List of input words for test data
-  # target              : List of target words for test data
-  # input_tokens        : Set of tokens in input language
-  # target_tokens        : Set of tokens in target language
-  '''
 
     input_token_index = dict([(char, i) for i, char in enumerate(input_tokens)])
     target_token_index = dict([(char, i) for i, char in enumerate(target_tokens)])
@@ -195,23 +152,17 @@ def one_hot_encoding_test(input, target, input_tokens, target_tokens):
 
 
 def getTokens(input, target, val_input, val_target):
-       '''
-     This function takes in the words of input and target language for training and validation datasets
-     This function returns the list of characters in input and target language for 
-     training and validation datasets
-    '''
+    # Getting input and target language characters
 
     # Training set
     input_tokens = set()
     target_tokens = set()
 
-    #Creating a set of input characters for train data
     for word in input:
         for char in word:
             if char not in input_tokens:
                 input_tokens.add(char)
 
-    #Creating a set of target characters for train data
     for word in target:
         for char in word:
             if char not in target_tokens:
@@ -221,13 +172,11 @@ def getTokens(input, target, val_input, val_target):
     val_input_tokens = set()
     val_target_tokens = set()
 
-    #Creating a set of input characters for train data
     for word in val_input:
         for char in word:
             if char not in val_input_tokens:
                 val_input_tokens.add(char)
 
-    #Creating a set of target characters for train data
     for word in val_target:
         for char in word:
             if char not in val_target_tokens:
@@ -241,23 +190,6 @@ def getTokens(input, target, val_input, val_target):
 
 
 def one_hot_encoding(input, target, val_input, val_target, input_tokens, target_tokens):
-    
-      '''
-   This function takes in words and characters of input and target language,
-   This function encodes each character of the word with a number correspoding to its position in the above
-   formed input_token set. Similar for target language
-   for example : 'a' in english (input language) is given : 0 'b' : 1 and so on...
-
-
-   The various parameters are as listed below
-  
-  # input               : List of input words for train data
-  # target              : List of target words for train data
-  # val_input           : List of input words for val data
-  # val_target          : List of target words for val data
-  # input_tokens        : Set of tokens in input language
-  # target_tokens        : Set of tokens in target language
-  '''
 
     input_token_index = dict([(char, i) for i, char in enumerate(input_tokens)])
     target_token_index = dict([(char, i) for i, char in enumerate(target_tokens)])
@@ -312,29 +244,20 @@ def one_hot_encoding(input, target, val_input, val_target, input_tokens, target_
 
 
 def rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-  '''
-    This function is used to build a seq2seq model using RNN as the cell.
+  # e_in : Encoder input
+  # e_out : Encoder output
+  # e_states: Encoder states
+  # d_in : Decoder input
+  # d_out : Decoder output
+  # d_dense : Dense layer for decoder
 
-  This function takes in the following inputs:
-    # num_encoder : number of encoder layers
-    # num_decoder : number of decoder layers
-    # embed_size : size of embedding 
-    # dropout : % of dropout in decimals
-    # hidden_layer_size : dimensionality of output space 
-
-  This function returns the model, encoder layers and decoder layers. 
-  This function uses AdditiveAttention to implement attention mechanism
-  '''
-
-  #defining the input layer for encoder followed by the embedding layer to convert into one hot
   enc_in = Input(shape=(max_encoder_seq_length,), name="encoder_input")
   enc_out = Embedding(num_encoder_tokens, embed_size, trainable=True, name = "encoder_embedding")(enc_in)
+  #enc_out = enc_in
 
-  #for ease of access in inference funciton, we are collecting the encoder layers and encoder states
   enc_layers = []
   enc_states = []
 
-  #defining the RNN cells for the given number of times
   for i in range(num_encoders):
         encoder = SimpleRNN(hidden_layer_size, return_state=True, return_sequences=True, dropout=dropout, name="encoder_rnn"+str(i+1))
         enc_layers.append(encoder)
@@ -342,13 +265,12 @@ def rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
         enc_states.append([state_h])
 
  
-  #defining the input layer for decoder followed by the embedding layer to convert into one hot
+  
   dec_in = Input(shape=(max_decoder_seq_length,), name="decoder_input")
   dec_out = Embedding(num_decoder_tokens, embed_size, trainable=True, name="decoder_embedding")(dec_in)
 
   dec_layers = []
 
-  #defining the RNN cells for the given number of times
   for i in range(num_decoders):
         decoder = SimpleRNN(hidden_layer_size, return_state=True, return_sequences=True, dropout=dropout, name="decoder_rnn"+str(i+1))
         dec_layers.append(decoder)
@@ -371,20 +293,12 @@ def rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def lstm( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-'''
-    This function is used to build a seq2seq model using LSTM as the cell.
-
-  This function takes in the following inputs:
-    # num_encoder : number of encoder layers
-    # num_decoder : number of decoder layers
-    # embed_size : size of embedding 
-    # dropout : % of dropout in decimals
-    # hidden_layer_size : dimensionality of output space 
-
-  This function returns the model, encoder layers and decoder layers. 
-  This function uses AdditiveAttention to implement attention mechanism
-  '''
-
+  # e_in : Encoder input
+  # e_out : Encoder output
+  # e_states: Encoder states
+  # d_in : Decoder input
+  # d_out : Decoder output
+  # d_dense : Dense layer for decoder
   
   enc_in = Input(shape=(max_encoder_seq_length,))
   enc_out = Embedding(num_encoder_tokens, embed_size, trainable=True)(enc_in)
@@ -425,19 +339,13 @@ def lstm( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def gru(num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-  '''
-    This function is used to build a seq2seq model using GRU as the cell.
-
-  This function takes in the following inputs:
-    # num_encoder : number of encoder layers
-    # num_decoder : number of decoder layers
-    # embed_size : size of embedding 
-    # dropout : % of dropout in decimals
-    # hidden_layer_size : dimensionality of output space 
-
-  This function returns the model, encoder layers and decoder layers. 
-  This function uses AdditiveAttention to implement attention mechanism
-  '''
+  # e_in : Encoder input
+  # e_out : Encoder output
+  # e_states: Encoder states
+  # d_in : Decoder input
+  # d_out : Decoder output
+  # d_dense : Dense layer for decoder
+  
  
   enc_in = Input(shape=(max_encoder_seq_length,))
   enc_out = Embedding(num_encoder_tokens, embed_size, trainable=True)(enc_in)
@@ -479,20 +387,7 @@ def gru(num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def build_model(num_encoders, num_decoders, cell, embed_size, dropout, hidden_layer_size):
-  '''
-  This function is used to build a model based on the following hyperparameters:
-  
-  # num_encoder : number of encoder layers
-  # num_decoder : number of decoder layers
-  # cell : The type of RNN used ( simpleRNN, LSTM, GRU )
-  # embed_size : size of embedding 
-  # dropout : % of dropout in decimals
-  # hidden_layer_size : dimensionality of output space 
 
-  It returns the model, encoder layers and decoder layers
-
-
-  '''
 
   if cell == "RNN":
     model, enc_layers, dec_layers=rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size)
@@ -506,22 +401,7 @@ def build_model(num_encoders, num_decoders, cell, embed_size, dropout, hidden_la
 
 
 def inferencing(model, num_encoders, num_decoders, enc_layers, dec_layers, cell, hidden_layer_size):
-  '''
-  This function takes in the following as input :
 
-  # model : Complete encoder decoder model 
-  # num_encoders : Number of encoder layers
-  # num_decoders : Number of decoder layers 
-  # enc_layers : encoder layers
-  # dec_layers : decoder layers
-  # cell : type of cell ( RNN, LSTM, GRU)
-  # hidden_layer_size : dimensionality of output space.
-
-  This function is used to reconstruct the encoder and decoder model seperately 
-  for inferencing the validation and test data for getting back the target word.
-
-  It returns encoder and decoder model seperately 
-  '''
 
     # ENCODER MODEL RECONSTRUCTION 
     enc_in = model.input[0]  # input_1
@@ -589,14 +469,6 @@ def inferencing(model, num_encoders, num_decoders, enc_layers, dec_layers, cell,
     return encoder, decoder
 
 def decode_sequence(input_seq, encoder, decoder):
-  '''
-  This function takes in the following as input : 
-  # input_seq : encoder input data
-  # encoder : Encoder model
-  # decoder : Decoder model
-
-  This function returns decoded sentence from the input as well as the attention weights.
-  '''
     # Encode the input as state vectors.
     states_value = encoder.predict(input_seq)
     attention_input = states_value[-1]
@@ -628,10 +500,6 @@ def decode_sequence(input_seq, encoder, decoder):
 
 
 def train():
-    
-    '''
-    This function is called when wandb sweeps are running 
-    '''
   default_config={
       "cell": "RNN",
       "embed_size":256,
@@ -728,10 +596,6 @@ hyperparameters = {
 
 
 def sweeper(project_name,entity_name):
-  '''
-  This function is used to run the wandb sweeps. 
-  It takes in project name and entity name as input , and does not return any value.
-  '''
   sweep_config={
 
       "method": "bayes",
@@ -766,13 +630,6 @@ best_hyperparameters = {
 
 
 def testing(entity_name, project_name):
-    
-      '''
-  This function takes in no inputs, it is used to calculate accuracy of the trained model on test dataset.
-  This function logs the test accuracy to wandb.
-  This function returns the model trained on training dataset with the set of best hyperparameters, rows containing predictions on test dataset and test input.
-
-  '''
 
     wandb.init(config=best_hyperparameters, project=project_name, entity=entity_name)
     config = wandb.config
