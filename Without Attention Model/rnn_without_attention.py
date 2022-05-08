@@ -37,6 +37,12 @@ from wandb.keras import WandbCallback
 
 def load_data():
     
+       '''
+   This function accepts no parameters
+   This function opens the tsv file for training and validation datasets
+   Returns training and validation dataset 
+  '''
+    
     train_file_path = "te.translit.sampled.train.tsv"
     val_file_path = "te.translit.sampled.dev.tsv"
 
@@ -61,6 +67,14 @@ def load_test_data():
     return test_dataset
 
 def prepare_data():
+    
+      '''
+   This function accpets no parameters 
+   This function returns data values of input and target words by adding
+   two characters \t and \n at the beginning and end of the word 
+   respectively.
+   This function  returns the input and target words for training and validation datasets
+  '''
 
     train_dataset, val_dataset = load_data()
     
@@ -151,6 +165,12 @@ def one_hot_encoding_test(input, target, input_tokens, target_tokens):
 
 
 def getTokens(input, target, val_input, val_target):
+    
+       '''
+     This function takes in the words of input and target language for training and validation datasets
+     This function returns the list of characters in input and target language for 
+     training and validation datasets
+    '''
     # Getting input and target language characters
 
     # Training set
@@ -189,6 +209,13 @@ def getTokens(input, target, val_input, val_target):
 
 
 def one_hot_encoding(input, target, val_input, val_target, input_tokens, target_tokens):
+    
+    '''
+   This function takes in words and characters of input and target language,
+   This function encodes each character of the word with a number correspoding to its position in the language
+   for example : 'a' in english (input language) is given : 0 'b' : 1 and so on...
+  '''
+
 
     input_token_index = dict([(char, i) for i, char in enumerate(input_tokens)])
     target_token_index = dict([(char, i) for i, char in enumerate(target_tokens)])
@@ -243,12 +270,19 @@ def one_hot_encoding(input, target, val_input, val_target, input_tokens, target_
 
 
 def rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-  # enc_in : Encoder input
-  # enc_out : Encoder output
-  # enc_states: Encoder states
-  # dec_in : Decoder input
-  # dec_out : Decoder output
-  # dec_dense : Dense layer for decoder
+    '''
+    This function is used to build a seq2seq model using RNN as the cell.
+
+  This function takes in the following inputs:
+    # num_encoder : number of encoder layers
+    # num_decoder : number of decoder layers
+    # embed_size : size of embedding 
+    # dropout : % of dropout in decimals
+    # hidden_layer_size : dimensionality of output space 
+
+  This function returns the model, encoder layers and decoder layers. 
+  '''
+
 
   #=============================================#
   #============== Encoder part =================#
@@ -290,12 +324,19 @@ def rnn( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def lstm( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-  # enc_in : Encoder input
-  # enc_out : Encoder output
-  # enc_states: Encoder states
-  # dec_in : Decoder input
-  # dec_out : Decoder output
-  # dec_dense : Dense layer for decoder
+    '''
+    This function is used to build a seq2seq model using LSTM as the cell.
+
+  This function takes in the following inputs:
+    # num_encoder : number of encoder layers
+    # num_decoder : number of decoder layers
+    # embed_size : size of embedding 
+    # dropout : % of dropout in decimals
+    # hidden_layer_size : dimensionality of output space 
+
+  This function returns the model, encoder layers and decoder layers. 
+
+  '''
 
   #=============================================#
   #============== Encoder part =================#
@@ -338,12 +379,18 @@ def lstm( num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def gru(num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
-  # enc_in : Encoder input
-  # enc_out : Encoder output
-  # enc_states: Encoder states
-  # dec_in : Decoder input
-  # dec_out : Decoder output
-  # dec_dense : Dense layer for decoder
+   '''
+    This function is used to build a seq2seq model using GRU as the cell.
+
+  This function takes in the following inputs:
+    # num_encoder : number of encoder layers
+    # num_decoder : number of decoder layers
+    # embed_size : size of embedding 
+    # dropout : % of dropout in decimals
+    # hidden_layer_size : dimensionality of output space 
+
+  This function returns the model, encoder layers and decoder layers. 
+  '''
  
   #=============================================#
   #============== Encoder part =================#
@@ -389,6 +436,20 @@ def gru(num_encoders, embed_size, dropout, num_decoders, hidden_layer_size):
 
 
 def build_model(num_encoders, num_decoders, cell, embed_size, dropout, hidden_layer_size):
+  '''
+  This function is used to build a model based on the following hyperparameters:
+  
+  # num_encoder : number of encoder layers
+  # num_decoder : number of decoder layers
+  # cell : The type of RNN used ( simpleRNN, LSTM, GRU )
+  # embed_size : size of embedding 
+  # dropout : % of dropout in decimals
+  # hidden_layer_size : dimensionality of output space 
+
+  It returns the model, encoder layers and decoder layers
+
+
+  '''
 
 
   if cell == "RNN":
@@ -403,6 +464,23 @@ def build_model(num_encoders, num_decoders, cell, embed_size, dropout, hidden_la
 
 
 def inferencing(model, num_encoders, num_decoders, enc_layers, dec_layers, cell, hidden_layer_size):
+    
+      '''
+  This function takes in the following as input :
+
+  # model : Complete encoder decoder model 
+  # num_encoders : Number of encoder layers
+  # num_decoders : Number of decoder layers 
+  # enc_layers : encoder layers
+  # dec_layers : decoder layers
+  # cell : type of cell ( RNN, LSTM, GRU)
+  # hidden_layer_size : dimensionality of output space.
+
+  This function is used to reconstruct the encoder and decoder model seperately 
+  for inferencing the validation and test data for getting back the target word.
+
+  It returns encoder and decoder model seperately 
+  '''
 
     # Reconstructing the encoder from the trained model
     enc_in = model.input[0]
@@ -460,6 +538,15 @@ def inferencing(model, num_encoders, num_decoders, enc_layers, dec_layers, cell,
     return encoder, decoder 
 
 def decode_sequence(input_seq, encoder, decoder):
+    
+     '''
+  This function takes in the following as input : 
+  # input_seq : encoder input data
+  # encoder : Encoder model
+  # decoder : Decoder model
+
+  This function returns decoded sentence from the input as well as the attention weights.
+  '''
 
     states_value = encoder.predict(input_seq)
     states_value = states_value[:-1]
@@ -489,6 +576,10 @@ def decode_sequence(input_seq, encoder, decoder):
 
 
 def train():
+    
+      '''
+    This function is called when wandb sweeps are running 
+    '''
   default_config={
       "cell": "RNN",
       "embed_size":256,
@@ -585,6 +676,11 @@ hyperparameters = {
 
 
 def sweeper(project_name,entity_name):
+    
+       '''
+  This function is used to run the wandb sweeps. 
+  It takes in project name and entity name as input , and does not return any value.
+  '''
   sweep_config={
 
       "method": "bayes",
@@ -619,6 +715,13 @@ best_hyperparameters = {
 
 
 def testing(entity_name, project_name):
+    
+      '''
+  This function takes in no inputs, it is used to calculate accuracy of the trained model on test dataset.
+  This function logs the test accuracy to wandb.
+  This function returns the model trained on training dataset with the set of best hyperparameters, rows containing predictions on test dataset and test input.
+
+  '''
 
     wandb.init(config=best_hyperparameters, project=project_name, entity=entity_name)
     config = wandb.config
