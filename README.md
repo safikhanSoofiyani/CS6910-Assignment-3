@@ -1,5 +1,5 @@
 # Indic transliteration system using RNNs
-<!-- Assignment 3 submission for the course CS6910 Fundamentals of Deep Learning. -->
+<!-- 3 submission for the course CS6910 Fundamentals of Deep Learning. -->
 <br>
 Check this link for the task description: https://wandb.ai/miteshk/assignments/reports/Assignment-3--Vmlldzo0NjQwMDc
 
@@ -23,7 +23,7 @@ The link to the wandb report:
 ```python 
 pip install -r requirements.txt
 ```
-2. The solution to the assignment is presented in the following notebooks :
+2. The project is presented in the following notebooks :
     1. `RNN.ipynb` : This notebook corresponds to training an Seq2Seq Model without attention
     2. `RNN_with_Attention.ipynb` : This notebook corresponds to training an Seq2Seq Model with attention, visualizing the connectivity and plotting the attention maps
     3. `Lyrics_Generation.ipynb` : This notebook corresponds to training GPT2 transformer model for lyrics generation
@@ -41,8 +41,8 @@ pip install -r requirements.txt
 !pip install datasets
 
 ```
-4. The dataset for the RNN part of the assignment can be found at : [RNN Dataset Link](https://storage.googleapis.com/gresearch/dakshina/dakshina_dataset_v1.0.tar)
-5. The dataset for the Transformers part of the assignment can be found at : [Transformer Dataset Link](https://www.kaggle.com/neisse/scrapped-lyrics-from-6-genres)
+4. The dataset for the RNN part of the project can be found at : [RNN Dataset Link](https://storage.googleapis.com/gresearch/dakshina/dakshina_dataset_v1.0.tar)
+5. The dataset for the Transformers part of the project can be found at : [Transformer Dataset Link](https://www.kaggle.com/neisse/scrapped-lyrics-from-6-genres)
 ---
 # Building and training a Seq2Seq model :
 ## Running the code
@@ -81,7 +81,7 @@ python rnn_without_attention.py --sweep no --cell LSTM --embedSize 64 --dropout 
 
 ### Running the jupyter notebook
 
-This can be run in a sequential manner. i.e., one cell at a time. This notebook also has the code for plotting the various images required for the assignment.
+This can be run in a sequential manner. i.e., one cell at a time. This notebook also has the code for plotting the various images required for the project.
 
 ## General Functions Description
 
@@ -189,7 +189,7 @@ python rnn_with_attention.py --sweep no --cell LSTM --embedSize 64 --dropout 0.2
 
 ### Running the jupyter notebook
 
-This can be run in a sequential manner. i.e., one cell at a time. This notebook also has the code for plotting the various images required for the assignment.
+This can be run in a sequential manner. i.e., one cell at a time. This notebook also has the code for plotting the various images required for the project.
 
 ## General Functions Description
 ### 1. Getting training data :
