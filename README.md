@@ -1,13 +1,14 @@
-# CS6910-Assignment-3 : Recurrent Neural network to build a transliteration system
-Assignment 3 submission for the course CS6910 Fundamentals of Deep Learning. <br>
-Check this link for the task description: [Assignment link](https://wandb.ai/miteshk/assignments/reports/Assignment-3--Vmlldzo0NjQwMDc)
+# Indic transliteration system using RNNs
+<!-- Assignment 3 submission for the course CS6910 Fundamentals of Deep Learning. -->
+<br>
+Check this link for the task description: https://wandb.ai/miteshk/assignments/reports/Assignment-3--Vmlldzo0NjQwMDc
 
 
-Team Members : **Vamsi Sai Krishna Malineni (OE20S302)**, **Mohammed Safi Ur Rahman Khan (CS21M035)** 
+Created by : **Mohammed Safi Ur Rahman Khan**, **Vamsi Sai Krishna Malineni**,  
 
 ---
 ## Overview :
-The purpose of this assignment were :
+The purpose of this project were :
 1. Building a transliteration system using Recurrent Neural Networks.
 2. Comparing different cells such as vanilla RNN, LSTM and GRU. 
 3. Implementing attention mechanism and understand how these overcome the limitations of vanilla seq2seq models.
